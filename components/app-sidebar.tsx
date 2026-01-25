@@ -38,66 +38,66 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Tableau de bord",
       url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Inventory",
+      title: "Inventaire",
       url: "/dashboard/inventory",
       icon: IconFirstAidKit,
     },
     {
-      title: "Stock Movements",
+      title: "Mouvements de stock",
       url: "/dashboard/movements",
       icon: IconArrowsExchange,
     },
     {
-      title: "Alerts",
+      title: "Alertes",
       url: "/dashboard/alerts",
       icon: IconAlertTriangle,
     },
     {
-      title: "Organization",
+      title: "Organisation",
       url: "/dashboard/organization",
       icon: IconUsers,
     },
   ],
   navSecondary: [
     {
-      title: "Settings",
+      title: "Paramètres",
       url: "/dashboard/settings",
       icon: IconSettings,
     },
     {
-      title: "Help",
+      title: "Aide",
       url: "/dashboard/help",
       icon: IconHelp,
     },
     {
-      title: "Search",
+      title: "Recherche",
       url: "/dashboard/search",
       icon: IconSearch,
     },
   ],
   locations: [
     {
-      name: "Main Warehouse",
+      name: "Entrepôt principal",
       url: "/dashboard/locations/warehouse",
       icon: IconBuildingWarehouse,
     },
     {
-      name: "Ambulance Unit 01",
+      name: "Unité ambulance 01",
       url: "/dashboard/locations/ambulance-01",
       icon: IconTruck,
     },
     {
-      name: "Field Post Alpha",
+      name: "Poste de terrain Alpha",
       url: "/dashboard/locations/field-alpha",
       icon: IconMapPin,
     },
     {
-      name: "Reports",
+      name: "Rapports",
       url: "/dashboard/reports",
       icon: IconReport,
     },
@@ -116,7 +116,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               >
                 <a href="/dashboard">
                   <IconFirstAidKit className="!size-5 text-primary" />
-                  <span className="text-base font-semibold">EmergencyStock</span>
+                  <span className="text-base font-semibold">Stock d'urgence</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>

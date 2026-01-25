@@ -24,25 +24,25 @@ import data from "../data.json"
 
 const locationStats = [
     {
-        name: "Main Warehouse",
+        name: "Entrepôt principal",
         icon: IconBuildingWarehouse,
         items: 1247,
         alerts: 2,
     },
     {
-        name: "Ambulance Unit 01",
+        name: "Unité ambulance 01",
         icon: IconTruck,
         items: 156,
         alerts: 3,
     },
     {
-        name: "Ambulance Unit 02",
+        name: "Unité ambulance 02",
         icon: IconTruck,
         items: 142,
         alerts: 1,
     },
     {
-        name: "Field Post Alpha",
+        name: "Poste de terrain Alpha",
         icon: IconMapPin,
         items: 89,
         alerts: 1,
@@ -67,7 +67,7 @@ export default function InventoryPage() {
                         <div className="flex flex-col gap-6 py-4 md:py-6">
                             {/* Location Cards */}
                             <div className="px-4 lg:px-6">
-                                <h2 className="mb-4 text-lg font-semibold">Inventory by Location</h2>
+                                <h2 className="mb-4 text-lg font-semibold">Inventaire par site</h2>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     {locationStats.map((location) => (
                                         <Card key={location.name} className="cursor-pointer transition-colors hover:bg-muted/50">
@@ -83,7 +83,7 @@ export default function InventoryPage() {
                                                 <CardTitle className="text-base">{location.name}</CardTitle>
                                                 <CardDescription className="flex items-center gap-1">
                                                     <IconPackage className="size-3" />
-                                                    {location.items.toLocaleString()} items
+                                                    {location.items.toLocaleString()} articles
                                                 </CardDescription>
                                             </CardHeader>
                                         </Card>
@@ -94,9 +94,9 @@ export default function InventoryPage() {
                             {/* Inventory Table */}
                             <div className="flex flex-col gap-4">
                                 <div className="px-4 lg:px-6">
-                                    <h2 className="text-lg font-semibold">All Inventory Items</h2>
+                                    <h2 className="text-lg font-semibold">Tous les articles d'inventaire</h2>
                                     <p className="text-sm text-muted-foreground">
-                                        Manage and track all medical supplies and equipment
+                                        Gérer et suivre toutes les fournitures médicales et les équipements
                                     </p>
                                 </div>
                                 <InventoryTable data={data} />

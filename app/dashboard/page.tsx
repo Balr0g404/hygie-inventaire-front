@@ -33,9 +33,9 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="px-4 lg:px-6">
-                    <h2 className="text-lg font-semibold">Inventory Overview</h2>
+                    <h2 className="text-lg font-semibold">Aperçu de l'inventaire</h2>
                     <p className="text-sm text-muted-foreground">
-                      Quick view of all items across locations
+                      Vue rapide de tous les articles par site
                     </p>
                   </div>
                   <InventoryTable data={data} />
