@@ -2,20 +2,17 @@
 
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
+  IconAlertTriangle,
+  IconArrowsExchange,
+  IconBuildingWarehouse,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
+  IconFirstAidKit,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
+  IconMapPin,
   IconReport,
   IconSearch,
   IconSettings,
+  IconTruck,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -35,147 +32,104 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Marco Rossi",
+    email: "m.rossi@civilprotection.org",
+    avatar: "/avatars/user.jpg",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Inventory",
+      url: "/dashboard/inventory",
+      icon: IconFirstAidKit,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
+      title: "Stock Movements",
+      url: "/dashboard/movements",
+      icon: IconArrowsExchange,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
+      title: "Alerts",
+      url: "/dashboard/alerts",
+      icon: IconAlertTriangle,
     },
     {
-      title: "Team",
-      url: "#",
+      title: "Organization",
+      url: "/dashboard/organization",
       icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: IconSettings,
     },
     {
-      title: "Get Help",
-      url: "#",
+      title: "Help",
+      url: "/dashboard/help",
       icon: IconHelp,
     },
     {
       title: "Search",
-      url: "#",
+      url: "/dashboard/search",
       icon: IconSearch,
     },
   ],
-  documents: [
+  locations: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
+      name: "Main Warehouse",
+      url: "/dashboard/locations/warehouse",
+      icon: IconBuildingWarehouse,
+    },
+    {
+      name: "Ambulance Unit 01",
+      url: "/dashboard/locations/ambulance-01",
+      icon: IconTruck,
+    },
+    {
+      name: "Field Post Alpha",
+      url: "/dashboard/locations/field-alpha",
+      icon: IconMapPin,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/dashboard/reports",
       icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-    </Sidebar>
+      <Sidebar collapsible="offcanvas" {...props}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                  asChild
+                  className="data-[slot=sidebar-menu-button]:!p-1.5"
+              >
+                <a href="/dashboard">
+                  <IconFirstAidKit className="!size-5 text-primary" />
+                  <span className="text-base font-semibold">EmergencyStock</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavDocuments items={data.locations} />
+          <NavSecondary items={data.navSecondary} className="mt-auto" />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} />
+        </SidebarFooter>
+      </Sidebar>
   )
 }
