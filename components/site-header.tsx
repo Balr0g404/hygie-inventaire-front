@@ -10,17 +10,17 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/dashboard/inventory": "Inventory Management",
-  "/dashboard/movements": "Stock Movements",
-  "/dashboard/alerts": "Alerts & Notifications",
-  "/dashboard/organization": "Organization",
-  "/dashboard/settings": "Settings",
+  "/dashboard": "Tableau de bord",
+  "/dashboard/inventory": "Gestion de l'inventaire",
+  "/dashboard/movements": "Mouvements de stock",
+  "/dashboard/alerts": "Alertes et notifications",
+  "/dashboard/organization": "Organisation",
+  "/dashboard/settings": "Paramètres",
 }
 
 export function SiteHeader() {
   const pathname = usePathname()
-  const title = pageTitles[pathname] || "Dashboard"
+  const title = pageTitles[pathname] || "Tableau de bord"
 
   return (
       <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">

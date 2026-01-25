@@ -71,13 +71,13 @@ type InventoryItem = z.infer<typeof inventorySchema>
 
 function getStatusVariant(status: string) {
     switch (status) {
-        case "In Stock":
+        case "En stock":
             return "default"
-        case "Low Stock":
+        case "Stock bas":
             return "secondary"
-        case "Expiring Soon":
+        case "Expiration proche":
             return "outline"
-        case "Expired":
+        case "Périmé":
             return "destructive"
         default:
             return "outline"
@@ -86,13 +86,13 @@ function getStatusVariant(status: string) {
 
 function getStatusColor(status: string) {
     switch (status) {
-        case "In Stock":
+        case "En stock":
             return "bg-[oklch(0.6_0.15_145)] text-white"
-        case "Low Stock":
+        case "Stock bas":
             return "bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]"
-        case "Expiring Soon":
+        case "Expiration proche":
             return "bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]"
-        case "Expired":
+        case "Périmé":
             return "bg-[oklch(0.55_0.2_25)] text-white"
         default:
             return ""
@@ -102,7 +102,7 @@ function getStatusColor(status: string) {
 const columns: ColumnDef<InventoryItem>[] = [
     {
         accessorKey: "name",
-        header: "Item Name",
+        header: "Nom de l'article",
         cell: ({ row }) => (
             <div className="font-medium">{row.original.name}</div>
         ),
@@ -110,7 +110,7 @@ const columns: ColumnDef<InventoryItem>[] = [
     },
     {
         accessorKey: "category",
-        header: "Category",
+        header: "Catégorie",
         cell: ({ row }) => (
             <Badge variant="outline" className="text-muted-foreground">
                 {row.original.category}
@@ -119,14 +119,14 @@ const columns: ColumnDef<InventoryItem>[] = [
     },
     {
         accessorKey: "location",
-        header: "Location",
+        header: "Emplacement",
         cell: ({ row }) => (
             <span className="text-muted-foreground">{row.original.location}</span>
         ),
     },
     {
         accessorKey: "quantity",
-        header: () => <div className="text-right">Qty</div>,
+        header: () => <div className="text-right">Qté</div>,
         cell: ({ row }) => {
             const isLow = row.original.quantity < row.original.minStock
             return (
@@ -138,7 +138,7 @@ const columns: ColumnDef<InventoryItem>[] = [
     },
     {
         accessorKey: "lot",
-        header: "Lot/Batch",
+        header: "Lot/Série",
         cell: ({ row }) => (
             <span className="font-mono text-xs text-muted-foreground">
         {row.original.lot}
@@ -147,11 +147,11 @@ const columns: ColumnDef<InventoryItem>[] = [
     },
     {
         accessorKey: "expiry",
-        header: "Expiry",
+        header: "Péremption",
         cell: ({ row }) => {
             const expiry = row.original.expiry
-            if (expiry === "N/A") {
-                return <span className="text-muted-foreground">N/A</span>
+            if (expiry === "N/D" || expiry === "N/A") {
+                return <span className="text-muted-foreground">N/D</span>
             }
             const expiryDate = new Date(expiry)
             const today = new Date()
@@ -161,14 +161,14 @@ const columns: ColumnDef<InventoryItem>[] = [
 
             return (
                 <span className={`tabular-nums ${isExpired ? "text-[oklch(0.55_0.2_25)] font-medium" : isExpiringSoon ? "text-[oklch(0.65_0.15_75)] font-medium" : "text-muted-foreground"}`}>
-          {expiryDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+          {expiryDate.toLocaleDateString("fr-FR", { year: "numeric", month: "short", day: "numeric" })}
         </span>
             )
         },
     },
     {
         accessorKey: "status",
-        header: "Status",
+        header: "Statut",
         cell: ({ row }) => (
             <Badge className={getStatusColor(row.original.status)}>
                 {row.original.status}
@@ -186,20 +186,31 @@ const columns: ColumnDef<InventoryItem>[] = [
                         size="icon"
                     >
                         <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">Ouvrir le menu</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Item</DropdownMenuItem>
-                    <DropdownMenuItem>Record Movement</DropdownMenuItem>
+                    <DropdownMenuItem>Voir les détails</DropdownMenuItem>
+                    <DropdownMenuItem>Modifier l'article</DropdownMenuItem>
+                    <DropdownMenuItem>Enregistrer un mouvement</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Remove</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive">Supprimer</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         ),
     },
 ]
+
+const columnLabels: Record<string, string> = {
+    name: "Nom de l'article",
+    category: "Catégorie",
+    location: "Emplacement",
+    quantity: "Quantité",
+    lot: "Lot/Série",
+    expiry: "Péremption",
+    status: "Statut",
+    actions: "Actions",
+}
 
 export function InventoryTable({
                                    data: initialData,
@@ -243,7 +254,7 @@ export function InventoryTable({
                 <div className="relative w-full sm:w-72">
                     <IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                        placeholder="Search inventory..."
+                        placeholder="Rechercher l'inventaire..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="pl-9"
@@ -257,21 +268,21 @@ export function InventoryTable({
                         }
                     >
                         <SelectTrigger className="w-[140px]" size="sm">
-                            <SelectValue placeholder="All Status" />
+                            <SelectValue placeholder="Tous les statuts" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="In Stock">In Stock</SelectItem>
-                            <SelectItem value="Low Stock">Low Stock</SelectItem>
-                            <SelectItem value="Expiring Soon">Expiring Soon</SelectItem>
-                            <SelectItem value="Expired">Expired</SelectItem>
+                            <SelectItem value="all">Tous les statuts</SelectItem>
+                            <SelectItem value="En stock">En stock</SelectItem>
+                            <SelectItem value="Stock bas">Stock bas</SelectItem>
+                            <SelectItem value="Expiration proche">Expiration proche</SelectItem>
+                            <SelectItem value="Périmé">Périmé</SelectItem>
                         </SelectContent>
                     </Select>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm">
                                 <IconLayoutColumns />
-                                <span className="hidden lg:inline">Columns</span>
+                                <span className="hidden lg:inline">Colonnes</span>
                                 <IconChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
@@ -287,7 +298,7 @@ export function InventoryTable({
                                             checked={column.getIsVisible()}
                                             onCheckedChange={(value) => column.toggleVisibility(!!value)}
                                         >
-                                            {column.id}
+                                            {columnLabels[column.id] ?? column.id}
                                         </DropdownMenuCheckboxItem>
                                     )
                                 })}
@@ -295,7 +306,7 @@ export function InventoryTable({
                     </DropdownMenu>
                     <Button size="sm">
                         <IconPlus />
-                        <span className="hidden lg:inline">Add Item</span>
+                        <span className="hidden lg:inline">Ajouter un article</span>
                     </Button>
                 </div>
             </div>
@@ -329,7 +340,7 @@ export function InventoryTable({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                    Aucun résultat.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -339,17 +350,17 @@ export function InventoryTable({
 
             <div className="flex items-center justify-between">
                 <div className="text-muted-foreground hidden text-sm lg:block">
-                    Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+                    Affichage de {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} à{" "}
                     {Math.min(
                         (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
                         table.getFilteredRowModel().rows.length
                     )}{" "}
-                    of {table.getFilteredRowModel().rows.length} items
+                    sur {table.getFilteredRowModel().rows.length} articles
                 </div>
                 <div className="flex w-full items-center gap-8 lg:w-fit">
                     <div className="hidden items-center gap-2 lg:flex">
                         <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                            Rows per page
+                            Lignes par page
                         </Label>
                         <Select
                             value={`${table.getState().pagination.pageSize}`}
@@ -368,7 +379,7 @@ export function InventoryTable({
                         </Select>
                     </div>
                     <div className="flex w-fit items-center justify-center text-sm font-medium">
-                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        Page {table.getState().pagination.pageIndex + 1} sur {table.getPageCount()}
                     </div>
                     <div className="ml-auto flex items-center gap-2 lg:ml-0">
                         <Button
@@ -377,7 +388,7 @@ export function InventoryTable({
                             onClick={() => table.setPageIndex(0)}
                             disabled={!table.getCanPreviousPage()}
                         >
-                            <span className="sr-only">Go to first page</span>
+                            <span className="sr-only">Aller à la première page</span>
                             <IconChevronsLeft />
                         </Button>
                         <Button
@@ -387,7 +398,7 @@ export function InventoryTable({
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
                         >
-                            <span className="sr-only">Go to previous page</span>
+                            <span className="sr-only">Aller à la page précédente</span>
                             <IconChevronLeft />
                         </Button>
                         <Button
@@ -397,7 +408,7 @@ export function InventoryTable({
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage()}
                         >
-                            <span className="sr-only">Go to next page</span>
+                            <span className="sr-only">Aller à la page suivante</span>
                             <IconChevronRight />
                         </Button>
                         <Button
@@ -407,7 +418,7 @@ export function InventoryTable({
                             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                             disabled={!table.getCanNextPage()}
                         >
-                            <span className="sr-only">Go to last page</span>
+                            <span className="sr-only">Aller à la dernière page</span>
                             <IconChevronsRight />
                         </Button>
                     </div>

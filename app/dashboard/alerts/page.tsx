@@ -50,10 +50,10 @@ const alertsData: Alert[] = [
     {
         id: 1,
         type: "expired",
-        title: "Expired Item",
-        description: "This item has passed its expiration date and should be disposed of immediately.",
-        item: "Aspirin 325mg",
-        location: "Ambulance Unit 01",
+        title: "Article périmé",
+        description: "Cet article a dépassé sa date de péremption et doit être éliminé immédiatement.",
+        item: "Aspirine 325 mg",
+        location: "Unité ambulance 01",
         date: "2024-09-15",
         priority: "critical",
         acknowledged: false,
@@ -61,10 +61,10 @@ const alertsData: Alert[] = [
     {
         id: 2,
         type: "low_stock",
-        title: "Low Stock Alert",
-        description: "Stock level is below minimum threshold. Reorder required.",
-        item: "Epinephrine 1mg/ml",
-        location: "Ambulance Unit 01",
+        title: "Alerte de stock bas",
+        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
+        item: "Épinéphrine 1 mg/ml",
+        location: "Unité ambulance 01",
         date: "2024-01-25",
         priority: "critical",
         acknowledged: false,
@@ -72,10 +72,10 @@ const alertsData: Alert[] = [
     {
         id: 3,
         type: "low_stock",
-        title: "Low Stock Alert",
-        description: "Stock level is below minimum threshold. Reorder required.",
-        item: "AED Pads (Adult)",
-        location: "Field Post Alpha",
+        title: "Alerte de stock bas",
+        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
+        item: "Électrodes DAE (adulte)",
+        location: "Poste de terrain Alpha",
         date: "2024-01-25",
         priority: "critical",
         acknowledged: false,
@@ -83,10 +83,10 @@ const alertsData: Alert[] = [
     {
         id: 4,
         type: "low_stock",
-        title: "Low Stock Alert",
-        description: "Stock level is below minimum threshold. Reorder required.",
-        item: "Atropine 0.5mg/ml",
-        location: "Main Warehouse",
+        title: "Alerte de stock bas",
+        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
+        item: "Atropine 0,5 mg/ml",
+        location: "Entrepôt principal",
         date: "2024-01-24",
         priority: "high",
         acknowledged: false,
@@ -94,10 +94,10 @@ const alertsData: Alert[] = [
     {
         id: 5,
         type: "expiring",
-        title: "Expiring Soon",
-        description: "This item will expire within 30 days. Plan for rotation or disposal.",
-        item: "Morphine 10mg/ml",
-        location: "Main Warehouse",
+        title: "Expiration proche",
+        description: "Cet article expirera dans 30 jours. Prévoir la rotation ou l'élimination.",
+        item: "Morphine 10 mg/ml",
+        location: "Entrepôt principal",
         date: "2025-02-01",
         priority: "high",
         acknowledged: false,
@@ -105,10 +105,10 @@ const alertsData: Alert[] = [
     {
         id: 6,
         type: "expiring",
-        title: "Expiring Soon",
-        description: "This item will expire within 90 days. Consider early rotation.",
-        item: "Saline Solution 500ml",
-        location: "Field Post Alpha",
+        title: "Expiration proche",
+        description: "Cet article expirera dans 90 jours. Envisager une rotation anticipée.",
+        item: "Solution saline 500 ml",
+        location: "Poste de terrain Alpha",
         date: "2025-03-15",
         priority: "medium",
         acknowledged: true,
@@ -116,10 +116,10 @@ const alertsData: Alert[] = [
     {
         id: 7,
         type: "expiring",
-        title: "Expiring Soon",
-        description: "This item will expire within 90 days. Consider early rotation.",
-        item: "Atropine 0.5mg/ml",
-        location: "Main Warehouse",
+        title: "Expiration proche",
+        description: "Cet article expirera dans 90 jours. Envisager une rotation anticipée.",
+        item: "Atropine 0,5 mg/ml",
+        location: "Entrepôt principal",
         date: "2025-01-10",
         priority: "high",
         acknowledged: false,
@@ -173,13 +173,13 @@ function getAlertColor(type: string) {
 function getPriorityBadge(priority: string) {
     switch (priority) {
         case "critical":
-            return <Badge className="bg-[oklch(0.55_0.2_25)] text-white">Critical</Badge>
+            return <Badge className="bg-[oklch(0.55_0.2_25)] text-white">Critique</Badge>
         case "high":
-            return <Badge className="bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]">High</Badge>
+            return <Badge className="bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]">Élevée</Badge>
         case "medium":
-            return <Badge variant="secondary">Medium</Badge>
+            return <Badge variant="secondary">Moyenne</Badge>
         default:
-            return <Badge variant="outline">Low</Badge>
+            return <Badge variant="outline">Faible</Badge>
     }
 }
 
@@ -211,7 +211,7 @@ function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id:
                             className="shrink-0"
                         >
                             <IconCheck className="size-4" />
-                            Acknowledge
+                            Accuser réception
                         </Button>
                     )}
                 </div>
@@ -219,19 +219,19 @@ function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id:
             <CardContent>
                 <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Item:</span>
+                        <span className="text-muted-foreground">Article :</span>
                         <span className="font-medium">{alert.item}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Location:</span>
+                        <span className="text-muted-foreground">Emplacement :</span>
                         <span>{alert.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <IconClock className="size-4 text-muted-foreground" />
                         <span className={colors.text}>
               {alert.type === "expired" || alert.type === "expiring"
-                  ? expiryDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-                  : "Detected " + new Date(alert.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  ? expiryDate.toLocaleDateString("fr-FR", { month: "short", day: "numeric", year: "numeric" })
+                  : `Détecté le ${new Date(alert.date).toLocaleDateString("fr-FR", { month: "short", day: "numeric" })}`}
             </span>
                     </div>
                 </div>
@@ -278,7 +278,7 @@ export default function AlertsPage() {
                                     <CardHeader className="pb-2">
                                         <CardDescription className="flex items-center gap-2">
                                             <IconX className="size-4 text-[oklch(0.55_0.2_25)]" />
-                                            Expired Items
+                                            Articles périmés
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
                                             {alerts.filter(a => a.type === "expired").length}
@@ -286,7 +286,7 @@ export default function AlertsPage() {
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-sm text-muted-foreground">
-                                            Require immediate disposal
+                                            À éliminer immédiatement
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -294,7 +294,7 @@ export default function AlertsPage() {
                                     <CardHeader className="pb-2">
                                         <CardDescription className="flex items-center gap-2">
                                             <IconCalendarDue className="size-4 text-[oklch(0.75_0.15_75)]" />
-                                            Expiring Soon
+                                            Expiration proche
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
                                             {alerts.filter(a => a.type === "expiring").length}
@@ -302,7 +302,7 @@ export default function AlertsPage() {
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-sm text-muted-foreground">
-                                            Within 90 days
+                                            Sous 90 jours
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -310,7 +310,7 @@ export default function AlertsPage() {
                                     <CardHeader className="pb-2">
                                         <CardDescription className="flex items-center gap-2">
                                             <IconPackage className="size-4 text-primary" />
-                                            Low Stock
+                                            Stock bas
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
                                             {alerts.filter(a => a.type === "low_stock").length}
@@ -318,7 +318,7 @@ export default function AlertsPage() {
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-sm text-muted-foreground">
-                                            Below minimum threshold
+                                            Sous le seuil minimum
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -328,9 +328,9 @@ export default function AlertsPage() {
                             <div className="flex flex-col gap-4 px-4 lg:px-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <h2 className="text-lg font-semibold">Active Alerts</h2>
+                                        <h2 className="text-lg font-semibold">Alertes actives</h2>
                                         <p className="text-sm text-muted-foreground">
-                                            {unacknowledgedCount} unacknowledged alert{unacknowledgedCount !== 1 ? "s" : ""} requiring attention
+                                            {unacknowledgedCount} alerte{unacknowledgedCount !== 1 ? "s" : ""} non accusée{unacknowledgedCount !== 1 ? "s" : ""} nécessitant une action
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -343,7 +343,7 @@ export default function AlertsPage() {
                                             htmlFor="show-acknowledged"
                                             className="text-sm font-medium leading-none cursor-pointer"
                                         >
-                                            Show acknowledged
+                                            Afficher les alertes reconnues
                                         </label>
                                     </div>
                                 </div>
@@ -351,16 +351,16 @@ export default function AlertsPage() {
                                 <Tabs defaultValue="all" className="w-full">
                                     <TabsList>
                                         <TabsTrigger value="all">
-                                            All <Badge variant="secondary" className="ml-1.5">{allAlerts.length}</Badge>
+                                            Toutes <Badge variant="secondary" className="ml-1.5">{allAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="critical">
-                                            Critical <Badge variant="secondary" className="ml-1.5">{criticalAlerts.length}</Badge>
+                                            Critiques <Badge variant="secondary" className="ml-1.5">{criticalAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="high">
-                                            High <Badge variant="secondary" className="ml-1.5">{highAlerts.length}</Badge>
+                                            Élevées <Badge variant="secondary" className="ml-1.5">{highAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="medium">
-                                            Medium <Badge variant="secondary" className="ml-1.5">{mediumAlerts.length}</Badge>
+                                            Moyennes <Badge variant="secondary" className="ml-1.5">{mediumAlerts.length}</Badge>
                                         </TabsTrigger>
                                     </TabsList>
 
@@ -373,8 +373,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">All clear!</p>
-                                                    <p className="text-sm text-muted-foreground">No alerts at this time</p>
+                                                    <p className="text-lg font-medium">Tout est en ordre !</p>
+                                                    <p className="text-sm text-muted-foreground">Aucune alerte pour le moment</p>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -389,8 +389,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">No critical alerts</p>
-                                                    <p className="text-sm text-muted-foreground">All critical items are within normal parameters</p>
+                                                    <p className="text-lg font-medium">Aucune alerte critique</p>
+                                                    <p className="text-sm text-muted-foreground">Tous les éléments critiques sont dans les paramètres normaux</p>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -405,8 +405,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">No high priority alerts</p>
-                                                    <p className="text-sm text-muted-foreground">All high priority items are within normal parameters</p>
+                                                    <p className="text-lg font-medium">Aucune alerte de priorité élevée</p>
+                                                    <p className="text-sm text-muted-foreground">Tous les éléments prioritaires sont dans les paramètres normaux</p>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -421,8 +421,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">No medium priority alerts</p>
-                                                    <p className="text-sm text-muted-foreground">All medium priority items are within normal parameters</p>
+                                                    <p className="text-lg font-medium">Aucune alerte de priorité moyenne</p>
+                                                    <p className="text-sm text-muted-foreground">Tous les éléments de priorité moyenne sont dans les paramètres normaux</p>
                                                 </CardContent>
                                             </Card>
                                         )}

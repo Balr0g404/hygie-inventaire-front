@@ -72,11 +72,11 @@ type Movement = {
 
 function getTypeIcon(type: string) {
     switch (type) {
-        case "Incoming":
+        case "Entrée":
             return <IconArrowDown className="size-4 text-[oklch(0.6_0.15_145)]" />
-        case "Consumption":
+        case "Consommation":
             return <IconArrowUp className="size-4 text-[oklch(0.55_0.2_25)]" />
-        case "Transfer":
+        case "Transfert":
             return <IconArrowsExchange className="size-4 text-primary" />
         default:
             return null
@@ -85,11 +85,11 @@ function getTypeIcon(type: string) {
 
 function getTypeBadgeColor(type: string) {
     switch (type) {
-        case "Incoming":
+        case "Entrée":
             return "bg-[oklch(0.6_0.15_145)]/10 text-[oklch(0.5_0.15_145)] border-[oklch(0.6_0.15_145)]/20"
-        case "Consumption":
+        case "Consommation":
             return "bg-[oklch(0.55_0.2_25)]/10 text-[oklch(0.45_0.2_25)] border-[oklch(0.55_0.2_25)]/20"
-        case "Transfer":
+        case "Transfert":
             return "bg-primary/10 text-primary border-primary/20"
         default:
             return ""
@@ -112,23 +112,23 @@ const columns: ColumnDef<Movement>[] = [
     },
     {
         accessorKey: "item",
-        header: "Item",
+        header: "Article",
         cell: ({ row }) => (
             <div className="font-medium">{row.original.item}</div>
         ),
     },
     {
         accessorKey: "quantity",
-        header: () => <div className="text-right">Qty</div>,
+        header: () => <div className="text-right">Qté</div>,
         cell: ({ row }) => (
             <div className="text-right font-medium tabular-nums">
-                {row.original.type === "Consumption" ? "-" : "+"}{row.original.quantity} {row.original.unit}
+                {row.original.type === "Consommation" ? "-" : "+"}{row.original.quantity} {row.original.unit}
             </div>
         ),
     },
     {
         accessorKey: "from",
-        header: "From",
+        header: "De",
         cell: ({ row }) => (
             <span className="text-muted-foreground">{row.original.from}</span>
         ),
@@ -139,7 +139,7 @@ const columns: ColumnDef<Movement>[] = [
     },
     {
         accessorKey: "to",
-        header: "To",
+        header: "Vers",
         cell: ({ row }) => (
             <span className="text-muted-foreground">{row.original.to}</span>
         ),
@@ -152,10 +152,10 @@ const columns: ColumnDef<Movement>[] = [
             return (
                 <div className="flex flex-col">
           <span className="tabular-nums">
-            {date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {date.toLocaleDateString("fr-FR", { month: "short", day: "numeric" })}
           </span>
                     <span className="text-xs text-muted-foreground tabular-nums">
-            {date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+            {date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
           </span>
                 </div>
             )
@@ -163,14 +163,14 @@ const columns: ColumnDef<Movement>[] = [
     },
     {
         accessorKey: "operator",
-        header: "Operator",
+        header: "Opérateur",
         cell: ({ row }) => (
             <span className="text-muted-foreground">{row.original.operator}</span>
         ),
     },
     {
         accessorKey: "reference",
-        header: "Reference",
+        header: "Référence",
         cell: ({ row }) => (
             <span className="font-mono text-xs text-muted-foreground">
         {row.original.reference}
@@ -188,19 +188,32 @@ const columns: ColumnDef<Movement>[] = [
                         size="icon"
                     >
                         <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">Ouvrir le menu</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Print Receipt</DropdownMenuItem>
+                    <DropdownMenuItem>Voir les détails</DropdownMenuItem>
+                    <DropdownMenuItem>Imprimer le reçu</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Reverse</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive">Annuler</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         ),
     },
 ]
+
+const columnLabels: Record<string, string> = {
+    type: "Type",
+    item: "Article",
+    quantity: "Quantité",
+    from: "De",
+    arrow: "Sens",
+    to: "Vers",
+    date: "Date",
+    operator: "Opérateur",
+    reference: "Référence",
+    actions: "Actions",
+}
 
 export function MovementsTable({ data: initialData }: { data: Movement[] }) {
     const [data] = React.useState(() => initialData)
@@ -240,7 +253,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                 <div className="relative w-full sm:w-72">
                     <IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                        placeholder="Search movements..."
+                        placeholder="Rechercher les mouvements..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="pl-9"
@@ -254,20 +267,20 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                         }
                     >
                         <SelectTrigger className="w-[140px]" size="sm">
-                            <SelectValue placeholder="All Types" />
+                            <SelectValue placeholder="Tous les types" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
-                            <SelectItem value="Incoming">Incoming</SelectItem>
-                            <SelectItem value="Consumption">Consumption</SelectItem>
-                            <SelectItem value="Transfer">Transfer</SelectItem>
+                            <SelectItem value="all">Tous les types</SelectItem>
+                            <SelectItem value="Entrée">Entrée</SelectItem>
+                            <SelectItem value="Consommation">Consommation</SelectItem>
+                            <SelectItem value="Transfert">Transfert</SelectItem>
                         </SelectContent>
                     </Select>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm">
                                 <IconLayoutColumns />
-                                <span className="hidden lg:inline">Columns</span>
+                                <span className="hidden lg:inline">Colonnes</span>
                                 <IconChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
@@ -282,14 +295,14 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                                         checked={column.getIsVisible()}
                                         onCheckedChange={(value) => column.toggleVisibility(!!value)}
                                     >
-                                        {column.id}
+                                        {columnLabels[column.id] ?? column.id}
                                     </DropdownMenuCheckboxItem>
                                 ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Button size="sm">
                         <IconPlus />
-                        <span className="hidden lg:inline">New Movement</span>
+                        <span className="hidden lg:inline">Nouveau mouvement</span>
                     </Button>
                 </div>
             </div>
@@ -323,7 +336,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No movements found.
+                                    Aucun mouvement trouvé.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -333,17 +346,17 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
 
             <div className="flex items-center justify-between">
                 <div className="text-muted-foreground hidden text-sm lg:block">
-                    Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+                    Affichage de {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} à{" "}
                     {Math.min(
                         (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
                         table.getFilteredRowModel().rows.length
                     )}{" "}
-                    of {table.getFilteredRowModel().rows.length} movements
+                    sur {table.getFilteredRowModel().rows.length} mouvements
                 </div>
                 <div className="flex w-full items-center gap-8 lg:w-fit">
                     <div className="hidden items-center gap-2 lg:flex">
                         <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                            Rows per page
+                            Lignes par page
                         </Label>
                         <Select
                             value={`${table.getState().pagination.pageSize}`}
@@ -362,7 +375,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                         </Select>
                     </div>
                     <div className="flex w-fit items-center justify-center text-sm font-medium">
-                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        Page {table.getState().pagination.pageIndex + 1} sur {table.getPageCount()}
                     </div>
                     <div className="ml-auto flex items-center gap-2 lg:ml-0">
                         <Button
@@ -371,7 +384,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                             onClick={() => table.setPageIndex(0)}
                             disabled={!table.getCanPreviousPage()}
                         >
-                            <span className="sr-only">Go to first page</span>
+                            <span className="sr-only">Aller à la première page</span>
                             <IconChevronsLeft />
                         </Button>
                         <Button
@@ -381,7 +394,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
                         >
-                            <span className="sr-only">Go to previous page</span>
+                            <span className="sr-only">Aller à la page précédente</span>
                             <IconChevronLeft />
                         </Button>
                         <Button
@@ -391,7 +404,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage()}
                         >
-                            <span className="sr-only">Go to next page</span>
+                            <span className="sr-only">Aller à la page suivante</span>
                             <IconChevronRight />
                         </Button>
                         <Button
@@ -401,7 +414,7 @@ export function MovementsTable({ data: initialData }: { data: Movement[] }) {
                             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                             disabled={!table.getCanNextPage()}
                         >
-                            <span className="sr-only">Go to last page</span>
+                            <span className="sr-only">Aller à la dernière page</span>
                             <IconChevronsRight />
                         </Button>
                     </div>
