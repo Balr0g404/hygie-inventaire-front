@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "node --test",
-    "test:ci": "node --test",
-    "format": "eslint --fix",
-    "format:check": "eslint ."
+    "lint": "eslint"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

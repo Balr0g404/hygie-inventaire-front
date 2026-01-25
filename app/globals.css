@@ -81,26 +81,6 @@
   --sidebar-ring: oklch(0.707 0.022 261.325);
 }
 
-:root[data-brand="aasc"] {
-  --primary: oklch(0.61 0.16 166.8);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.95 0.03 167.4);
-  --secondary-foreground: oklch(0.28 0.05 166.2);
-  --ring: oklch(0.71 0.11 167.2);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-}
-
-:root[data-brand="ambulance"] {
-  --primary: oklch(0.55 0.2 28.6);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.96 0.03 32.6);
-  --secondary-foreground: oklch(0.31 0.08 29.1);
-  --ring: oklch(0.7 0.14 30.2);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-}
-
 .dark {
   --background: oklch(0.13 0.028 261.692);
   --foreground: oklch(0.985 0.002 247.839);
@@ -140,6 +120,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background font-sans text-foreground;
+    @apply bg-background text-foreground;
   }
 }
