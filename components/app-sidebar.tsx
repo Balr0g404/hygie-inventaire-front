@@ -15,6 +15,7 @@ import {
   IconTruck,
   IconUsers,
 } from "@tabler/icons-react"
+import { useAuth } from "@/lib/auth/context"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -31,11 +32,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "Marco Rossi",
-    email: "m.rossi@civilprotection.org",
-    avatar: "/avatars/user.jpg",
-  },
   navMain: [
     {
       title: "Tableau de bord",
@@ -105,6 +101,13 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+
+  const displayUser = {
+    name: user?.full_name || user?.email?.split("@")[0] || "Utilisateur",
+    email: user?.email || "",
+  }
+
   return (
       <Sidebar collapsible="offcanvas" {...props}>
         <SidebarHeader>
@@ -116,7 +119,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               >
                 <a href="/dashboard">
                   <IconFirstAidKit className="!size-5 text-primary" />
-                  <span className="text-base font-semibold">Stock d'urgence</span>
+                  <span className="text-base font-semibold">Hygie inventaire</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -128,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          <NavUser user={displayUser} />
         </SidebarFooter>
       </Sidebar>
   )
