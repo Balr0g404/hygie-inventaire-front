@@ -168,8 +168,15 @@ export const authApi = {
     },
 
     logout: async (): Promise<void> => {
+        const tokens = getStoredTokens()
+
         try {
-            await apiRequest('/api/v1/auth/jwt/logout/', { method: 'POST' })
+            if (tokens?.refresh) {
+                await apiRequest('/api/v1/auth/jwt/logout/', {
+                    method: 'POST',
+                    body: JSON.stringify({ refresh: tokens.refresh }),
+                })
+            }
         } finally {
             setStoredTokens(null)
         }
