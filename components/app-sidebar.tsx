@@ -45,6 +45,11 @@ const data = {
       icon: IconFirstAidKit,
     },
     {
+      title: "Stock",
+      url: "/dashboard/stock",
+      icon: IconBuildingWarehouse,
+    },
+    {
       title: "Mouvements de stock",
       url: "/dashboard/movements",
       icon: IconArrowsExchange,
