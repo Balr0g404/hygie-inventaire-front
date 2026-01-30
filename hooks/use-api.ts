@@ -13,6 +13,8 @@ import {
     inventorySessionsApi,
     usersApi,
     structuresApi,
+    organizationsApi,
+    membershipsApi,
 } from "@/lib/api/client"
 import type {
     Item,
@@ -26,6 +28,8 @@ import type {
     InventorySession,
     User,
     Structure,
+    Organization,
+    Membership,
 } from "@/lib/api/types"
 
 // Items
@@ -165,5 +169,29 @@ export function useStructure(id: number | null) {
     return useSWR<Structure>(
         id ? `structures/${id}` : null,
         id ? () => structuresApi.get(id) : null
+    )
+}
+
+// Organizations
+export function useOrganizations() {
+    return useSWR<Organization[]>("organizations", () => organizationsApi.list())
+}
+
+export function useOrganization(id: number | null) {
+    return useSWR<Organization>(
+        id ? `organizations/${id}` : null,
+        id ? () => organizationsApi.get(id) : null
+    )
+}
+
+// Memberships
+export function useMemberships() {
+    return useSWR<Membership[]>("memberships", () => membershipsApi.list())
+}
+
+export function useMembership(id: number | null) {
+    return useSWR<Membership>(
+        id ? `memberships/${id}` : null,
+        id ? () => membershipsApi.get(id) : null
     )
 }
