@@ -76,29 +76,7 @@ const data = {
       url: "/dashboard/search",
       icon: IconSearch,
     },
-  ],
-  locations: [
-    {
-      name: "Entrepôt principal",
-      url: "/dashboard/locations/warehouse",
-      icon: IconBuildingWarehouse,
-    },
-    {
-      name: "Unité ambulance 01",
-      url: "/dashboard/locations/ambulance-01",
-      icon: IconTruck,
-    },
-    {
-      name: "Poste de terrain Alpha",
-      url: "/dashboard/locations/field-alpha",
-      icon: IconMapPin,
-    },
-    {
-      name: "Rapports",
-      url: "/dashboard/reports",
-      icon: IconReport,
-    },
-  ],
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -127,7 +105,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
-          <NavDocuments items={data.locations} />
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
         <SidebarFooter>

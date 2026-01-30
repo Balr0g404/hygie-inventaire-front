@@ -2,7 +2,6 @@
 
 import React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { InventoryTableApi } from "@/components/inventory-table-api"
 import { SectionCardsApi } from "@/components/section-cards-api"
 import { SiteHeader } from "@/components/site-header"
@@ -32,7 +31,7 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="px-4 lg:px-6">
-                    <h2 className="text-lg font-semibold">Apercu de l'inventaire</h2>
+                    <h2 className="text-lg font-semibold">Apercu de l&apsos;inventaire</h2>
                     <p className="text-sm text-muted-foreground">
                       Vue rapide de tous les articles par site
                     </p>
