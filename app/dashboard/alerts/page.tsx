@@ -1,10 +1,9 @@
 "use client"
 
-import React from "react"
-
-import { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
+import { useBatches, useItems, useStockLines, useSites, useLocations, useLotInstances, useContainers } from "@/hooks/use-api"
 import {
     SidebarInset,
     SidebarProvider,
@@ -19,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
     IconAlertTriangle,
     IconCalendarDue,
@@ -34,97 +34,20 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 
-type Alert = {
-    id: number
-    type: "expired" | "expiring" | "low_stock" | "critical"
+type ComputedAlert = {
+    id: string
+    type: "expired" | "expiring" | "low_stock"
     title: string
     description: string
     item: string
+    itemId: number
     location: string
     date: string
     priority: "critical" | "high" | "medium"
     acknowledged: boolean
+    batchId?: number
+    quantity?: number
 }
-
-const alertsData: Alert[] = [
-    {
-        id: 1,
-        type: "expired",
-        title: "Article périmé",
-        description: "Cet article a dépassé sa date de péremption et doit être éliminé immédiatement.",
-        item: "Aspirine 325 mg",
-        location: "Unité ambulance 01",
-        date: "2024-09-15",
-        priority: "critical",
-        acknowledged: false,
-    },
-    {
-        id: 2,
-        type: "low_stock",
-        title: "Alerte de stock bas",
-        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
-        item: "Épinéphrine 1 mg/ml",
-        location: "Unité ambulance 01",
-        date: "2024-01-25",
-        priority: "critical",
-        acknowledged: false,
-    },
-    {
-        id: 3,
-        type: "low_stock",
-        title: "Alerte de stock bas",
-        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
-        item: "Électrodes DAE (adulte)",
-        location: "Poste de terrain Alpha",
-        date: "2024-01-25",
-        priority: "critical",
-        acknowledged: false,
-    },
-    {
-        id: 4,
-        type: "low_stock",
-        title: "Alerte de stock bas",
-        description: "Le niveau de stock est inférieur au seuil minimum. Réapprovisionnement requis.",
-        item: "Atropine 0,5 mg/ml",
-        location: "Entrepôt principal",
-        date: "2024-01-24",
-        priority: "high",
-        acknowledged: false,
-    },
-    {
-        id: 5,
-        type: "expiring",
-        title: "Expiration proche",
-        description: "Cet article expirera dans 30 jours. Prévoir la rotation ou l'élimination.",
-        item: "Morphine 10 mg/ml",
-        location: "Entrepôt principal",
-        date: "2025-02-01",
-        priority: "high",
-        acknowledged: false,
-    },
-    {
-        id: 6,
-        type: "expiring",
-        title: "Expiration proche",
-        description: "Cet article expirera dans 90 jours. Envisager une rotation anticipée.",
-        item: "Solution saline 500 ml",
-        location: "Poste de terrain Alpha",
-        date: "2025-03-15",
-        priority: "medium",
-        acknowledged: true,
-    },
-    {
-        id: 7,
-        type: "expiring",
-        title: "Expiration proche",
-        description: "Cet article expirera dans 90 jours. Envisager une rotation anticipée.",
-        item: "Atropine 0,5 mg/ml",
-        location: "Entrepôt principal",
-        date: "2025-01-10",
-        priority: "high",
-        acknowledged: false,
-    },
-]
 
 function getAlertIcon(type: string) {
     switch (type) {
@@ -133,7 +56,6 @@ function getAlertIcon(type: string) {
         case "expiring":
             return <IconCalendarDue className="size-5" />
         case "low_stock":
-        case "critical":
             return <IconPackage className="size-5" />
         default:
             return <IconAlertTriangle className="size-5" />
@@ -155,7 +77,6 @@ function getAlertColor(type: string) {
                 border: "border-[oklch(0.75_0.15_75)]/20",
             }
         case "low_stock":
-        case "critical":
             return {
                 bg: "bg-[oklch(0.55_0.2_25)]/10",
                 text: "text-[oklch(0.55_0.2_25)]",
@@ -175,7 +96,7 @@ function getPriorityBadge(priority: string) {
         case "critical":
             return <Badge className="bg-[oklch(0.55_0.2_25)] text-white">Critique</Badge>
         case "high":
-            return <Badge className="bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]">Élevée</Badge>
+            return <Badge className="bg-[oklch(0.75_0.15_75)] text-[oklch(0.25_0.05_75)]">Elevee</Badge>
         case "medium":
             return <Badge variant="secondary">Moyenne</Badge>
         default:
@@ -183,9 +104,15 @@ function getPriorityBadge(priority: string) {
     }
 }
 
-function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id: number) => void }) {
+function AlertCard({
+                       alert,
+                       onAcknowledge
+                   }: {
+    alert: ComputedAlert
+    onAcknowledge: (id: string) => void
+}) {
     const colors = getAlertColor(alert.type)
-    const expiryDate = new Date(alert.date)
+    const alertDate = new Date(alert.date)
 
     return (
         <Card className={`${alert.acknowledged ? "opacity-60" : ""} transition-opacity`}>
@@ -211,7 +138,7 @@ function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id:
                             className="shrink-0"
                         >
                             <IconCheck className="size-4" />
-                            Accuser réception
+                            Accuser reception
                         </Button>
                     )}
                 </div>
@@ -226,12 +153,18 @@ function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id:
                         <span className="text-muted-foreground">Emplacement :</span>
                         <span>{alert.location}</span>
                     </div>
+                    {alert.quantity !== undefined && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground">Quantite :</span>
+                            <span className="font-medium">{alert.quantity}</span>
+                        </div>
+                    )}
                     <div className="flex items-center gap-2">
                         <IconClock className="size-4 text-muted-foreground" />
                         <span className={colors.text}>
               {alert.type === "expired" || alert.type === "expiring"
-                  ? expiryDate.toLocaleDateString("fr-FR", { month: "short", day: "numeric", year: "numeric" })
-                  : `Détecté le ${new Date(alert.date).toLocaleDateString("fr-FR", { month: "short", day: "numeric" })}`}
+                  ? alertDate.toLocaleDateString("fr-FR", { month: "short", day: "numeric", year: "numeric" })
+                  : `Detecte le ${alertDate.toLocaleDateString("fr-FR", { month: "short", day: "numeric" })}`}
             </span>
                     </div>
                 </div>
@@ -240,31 +173,230 @@ function AlertCard({ alert, onAcknowledge }: { alert: Alert; onAcknowledge: (id:
     )
 }
 
+function AlertsSkeleton() {
+    return (
+        <div className="flex flex-col gap-6 py-4 md:py-6">
+            <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-3 lg:px-6">
+                {[...Array(3)].map((_, i) => (
+                    <Card key={i}>
+                        <CardHeader className="pb-2">
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="h-8 w-16" />
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-4 w-40" />
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+            <div className="flex flex-col gap-4 px-4 lg:px-6">
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-10 w-80" />
+                {[...Array(3)].map((_, i) => (
+                    <Skeleton key={i} className="h-32 w-full" />
+                ))}
+            </div>
+        </div>
+    )
+}
+
 export default function AlertsPage() {
-    const [alerts, setAlerts] = useState(alertsData)
+    const { data: batches, isLoading: batchesLoading } = useBatches()
+    const { data: items, isLoading: itemsLoading } = useItems()
+    const { data: stockLines, isLoading: stockLinesLoading } = useStockLines()
+    const { data: sites, isLoading: sitesLoading } = useSites()
+    const { data: locations, isLoading: locationsLoading } = useLocations()
+    const { data: lotInstances, isLoading: lotInstancesLoading } = useLotInstances()
+    const { data: containers, isLoading: containersLoading } = useContainers()
+
+    const isLoading = batchesLoading || itemsLoading || stockLinesLoading || sitesLoading || locationsLoading || lotInstancesLoading || containersLoading
+
+    const [acknowledgedIds, setAcknowledgedIds] = useState<Set<string>>(new Set())
     const [showAcknowledged, setShowAcknowledged] = useState(false)
 
-    const handleAcknowledge = (id: number) => {
-        setAlerts(alerts.map(alert =>
-            alert.id === id ? { ...alert, acknowledged: true } : alert
-        ))
+    // Compute alerts from API data
+    const computedAlerts = useMemo<ComputedAlert[]>(() => {
+        if (!batches || !items || !stockLines) return []
+
+        const alerts: ComputedAlert[] = []
+        const today = new Date()
+        const thirtyDaysFromNow = new Date()
+        thirtyDaysFromNow.setDate(today.getDate() + 30)
+        const ninetyDaysFromNow = new Date()
+        ninetyDaysFromNow.setDate(today.getDate() + 90)
+
+        const itemMap = new Map(items.map(i => [i.id, i]))
+        const batchMap = new Map(batches.map(b => [b.id, b]))
+        const lotInstanceMap = new Map(lotInstances?.map(li => [li.id, li]) || [])
+        const containerMap = new Map(containers?.map(c => [c.id, c]) || [])
+        const locationMap = new Map(locations?.map(l => [l.id, l]) || [])
+        const siteMap = new Map(sites?.map(s => [s.id, s]) || [])
+
+        // Get location name helper
+        const getLocationName = (stockLineId: number): string => {
+            const stockLine = stockLines.find(sl => sl.id === stockLineId)
+            if (!stockLine) return "Inconnu"
+            const lotInstance = lotInstanceMap.get(stockLine.lot_instance)
+            if (!lotInstance) return "Inconnu"
+            const container = containerMap.get(lotInstance.container)
+            if (!container?.location) return "Non assigne"
+            const location = locationMap.get(container.location)
+            if (!location) return "Inconnu"
+            const site = siteMap.get(location.site)
+            return site ? `${site.name} - ${location.name}` : location.name
+        }
+
+        // Group stock lines by item
+        const stockLinesByItem = new Map<number, typeof stockLines>()
+        stockLines.forEach(sl => {
+            const existing = stockLinesByItem.get(sl.item) || []
+            existing.push(sl)
+            stockLinesByItem.set(sl.item, existing)
+        })
+
+        // Check batches for expiry alerts
+        batches.forEach(batch => {
+            if (!batch.expires_at) return
+
+            const expiryDate = new Date(batch.expires_at)
+            const item = itemMap.get(batch.item)
+            if (!item) return
+
+            // Find stock lines with this batch to get location
+            const relatedStockLines = stockLines.filter(sl => sl.batch === batch.id)
+            const locationName = relatedStockLines.length > 0
+                ? getLocationName(relatedStockLines[0].id)
+                : "Inconnu"
+            const totalQty = relatedStockLines.reduce((sum, sl) => sum + parseFloat(sl.quantity), 0)
+
+            if (expiryDate < today) {
+                // Expired
+                alerts.push({
+                    id: `expired-${batch.id}`,
+                    type: "expired",
+                    title: "Article perime",
+                    description: "Cet article a depasse sa date de peremption et doit etre elimine immediatement.",
+                    item: item.name,
+                    itemId: item.id,
+                    location: locationName,
+                    date: batch.expires_at,
+                    priority: "critical",
+                    acknowledged: acknowledgedIds.has(`expired-${batch.id}`),
+                    batchId: batch.id,
+                    quantity: totalQty,
+                })
+            } else if (expiryDate <= thirtyDaysFromNow) {
+                // Expiring within 30 days - high priority
+                alerts.push({
+                    id: `expiring-${batch.id}`,
+                    type: "expiring",
+                    title: "Expiration proche",
+                    description: "Cet article expirera dans moins de 30 jours. Prevoir la rotation ou l'elimination.",
+                    item: item.name,
+                    itemId: item.id,
+                    location: locationName,
+                    date: batch.expires_at,
+                    priority: "high",
+                    acknowledged: acknowledgedIds.has(`expiring-${batch.id}`),
+                    batchId: batch.id,
+                    quantity: totalQty,
+                })
+            } else if (expiryDate <= ninetyDaysFromNow) {
+                // Expiring within 90 days - medium priority
+                alerts.push({
+                    id: `expiring-${batch.id}`,
+                    type: "expiring",
+                    title: "Expiration proche",
+                    description: "Cet article expirera dans 90 jours. Envisager une rotation anticipee.",
+                    item: item.name,
+                    itemId: item.id,
+                    location: locationName,
+                    date: batch.expires_at,
+                    priority: "medium",
+                    acknowledged: acknowledgedIds.has(`expiring-${batch.id}`),
+                    batchId: batch.id,
+                    quantity: totalQty,
+                })
+            }
+        })
+
+        // Check for low stock (items with 0 or very low quantity)
+        items.forEach(item => {
+            const itemStockLines = stockLinesByItem.get(item.id) || []
+            const totalQty = itemStockLines.reduce((sum, sl) => sum + parseFloat(sl.quantity), 0)
+
+            // Consider low stock if quantity is 0 or less than 5 for consumables
+            if (totalQty === 0 || (item.is_consumable && totalQty < 5)) {
+                const locationName = itemStockLines.length > 0
+                    ? getLocationName(itemStockLines[0].id)
+                    : "Non assigne"
+
+                alerts.push({
+                    id: `low-stock-${item.id}`,
+                    type: "low_stock",
+                    title: totalQty === 0 ? "Rupture de stock" : "Alerte de stock bas",
+                    description: totalQty === 0
+                        ? "Cet article est en rupture de stock. Reapprovisionnement urgent requis."
+                        : "Le niveau de stock est inferieur au seuil minimum. Reapprovisionnement requis.",
+                    item: item.name,
+                    itemId: item.id,
+                    location: locationName,
+                    date: new Date().toISOString(),
+                    priority: totalQty === 0 ? "critical" : "high",
+                    acknowledged: acknowledgedIds.has(`low-stock-${item.id}`),
+                    quantity: totalQty,
+                })
+            }
+        })
+
+        // Sort by priority
+        const priorityOrder = { critical: 0, high: 1, medium: 2 }
+        alerts.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+
+        return alerts
+    }, [batches, items, stockLines, sites, locations, lotInstances, containers, acknowledgedIds])
+
+    const handleAcknowledge = (id: string) => {
+        setAcknowledgedIds(prev => new Set([...prev, id]))
     }
 
-    const criticalAlerts = alerts.filter(a => a.priority === "critical" && (!a.acknowledged || showAcknowledged))
-    const highAlerts = alerts.filter(a => a.priority === "high" && (!a.acknowledged || showAcknowledged))
-    const mediumAlerts = alerts.filter(a => a.priority === "medium" && (!a.acknowledged || showAcknowledged))
-    const allAlerts = alerts.filter(a => !a.acknowledged || showAcknowledged)
+    const displayedAlerts = computedAlerts.filter(a => !a.acknowledged || showAcknowledged)
+    const criticalAlerts = displayedAlerts.filter(a => a.priority === "critical")
+    const highAlerts = displayedAlerts.filter(a => a.priority === "high")
+    const mediumAlerts = displayedAlerts.filter(a => a.priority === "medium")
 
-    const unacknowledgedCount = alerts.filter(a => !a.acknowledged).length
+    const unacknowledgedCount = computedAlerts.filter(a => !a.acknowledged).length
+    const expiredCount = computedAlerts.filter(a => a.type === "expired").length
+    const expiringCount = computedAlerts.filter(a => a.type === "expiring").length
+    const lowStockCount = computedAlerts.filter(a => a.type === "low_stock").length
+
+    if (isLoading) {
+        return (
+            <SidebarProvider
+                style={{
+                    "--sidebar-width": "calc(var(--spacing) * 72)",
+                    "--header-height": "calc(var(--spacing) * 12)",
+                } as React.CSSProperties}
+            >
+                <AppSidebar variant="inset" />
+                <SidebarInset>
+                    <SiteHeader />
+                    <div className="flex flex-1 flex-col">
+                        <div className="@container/main flex flex-1 flex-col gap-2">
+                            <AlertsSkeleton />
+                        </div>
+                    </div>
+                </SidebarInset>
+            </SidebarProvider>
+        )
+    }
 
     return (
         <SidebarProvider
-            style={
-                {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                } as React.CSSProperties
-            }
+            style={{
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties}
         >
             <AppSidebar variant="inset" />
             <SidebarInset>
@@ -278,15 +410,15 @@ export default function AlertsPage() {
                                     <CardHeader className="pb-2">
                                         <CardDescription className="flex items-center gap-2">
                                             <IconX className="size-4 text-[oklch(0.55_0.2_25)]" />
-                                            Articles périmés
+                                            Articles perimes
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
-                                            {alerts.filter(a => a.type === "expired").length}
+                                            {expiredCount}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-sm text-muted-foreground">
-                                            À éliminer immédiatement
+                                            A eliminer immediatement
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -297,7 +429,7 @@ export default function AlertsPage() {
                                             Expiration proche
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
-                                            {alerts.filter(a => a.type === "expiring").length}
+                                            {expiringCount}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
@@ -313,7 +445,7 @@ export default function AlertsPage() {
                                             Stock bas
                                         </CardDescription>
                                         <CardTitle className="text-2xl tabular-nums">
-                                            {alerts.filter(a => a.type === "low_stock").length}
+                                            {lowStockCount}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
@@ -330,7 +462,7 @@ export default function AlertsPage() {
                                     <div>
                                         <h2 className="text-lg font-semibold">Alertes actives</h2>
                                         <p className="text-sm text-muted-foreground">
-                                            {unacknowledgedCount} alerte{unacknowledgedCount !== 1 ? "s" : ""} non accusée{unacknowledgedCount !== 1 ? "s" : ""} nécessitant une action
+                                            {unacknowledgedCount} alerte{unacknowledgedCount !== 1 ? "s" : ""} non accusee{unacknowledgedCount !== 1 ? "s" : ""} necessitant une action
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -351,13 +483,13 @@ export default function AlertsPage() {
                                 <Tabs defaultValue="all" className="w-full">
                                     <TabsList>
                                         <TabsTrigger value="all">
-                                            Toutes <Badge variant="secondary" className="ml-1.5">{allAlerts.length}</Badge>
+                                            Toutes <Badge variant="secondary" className="ml-1.5">{displayedAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="critical">
                                             Critiques <Badge variant="secondary" className="ml-1.5">{criticalAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="high">
-                                            Élevées <Badge variant="secondary" className="ml-1.5">{highAlerts.length}</Badge>
+                                            Elevees <Badge variant="secondary" className="ml-1.5">{highAlerts.length}</Badge>
                                         </TabsTrigger>
                                         <TabsTrigger value="medium">
                                             Moyennes <Badge variant="secondary" className="ml-1.5">{mediumAlerts.length}</Badge>
@@ -365,8 +497,8 @@ export default function AlertsPage() {
                                     </TabsList>
 
                                     <TabsContent value="all" className="mt-4 flex flex-col gap-4">
-                                        {allAlerts.length > 0 ? (
-                                            allAlerts.map((alert) => (
+                                        {displayedAlerts.length > 0 ? (
+                                            displayedAlerts.map((alert) => (
                                                 <AlertCard key={alert.id} alert={alert} onAcknowledge={handleAcknowledge} />
                                             ))
                                         ) : (
@@ -390,7 +522,7 @@ export default function AlertsPage() {
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
                                                     <p className="text-lg font-medium">Aucune alerte critique</p>
-                                                    <p className="text-sm text-muted-foreground">Tous les éléments critiques sont dans les paramètres normaux</p>
+                                                    <p className="text-sm text-muted-foreground">Tous les elements critiques sont dans les parametres normaux</p>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -405,8 +537,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">Aucune alerte de priorité élevée</p>
-                                                    <p className="text-sm text-muted-foreground">Tous les éléments prioritaires sont dans les paramètres normaux</p>
+                                                    <p className="text-lg font-medium">Aucune alerte de priorite elevee</p>
+                                                    <p className="text-sm text-muted-foreground">Tous les elements prioritaires sont dans les parametres normaux</p>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -421,8 +553,8 @@ export default function AlertsPage() {
                                             <Card>
                                                 <CardContent className="flex flex-col items-center justify-center py-12">
                                                     <IconCheck className="size-12 text-[oklch(0.6_0.15_145)] mb-4" />
-                                                    <p className="text-lg font-medium">Aucune alerte de priorité moyenne</p>
-                                                    <p className="text-sm text-muted-foreground">Tous les éléments de priorité moyenne sont dans les paramètres normaux</p>
+                                                    <p className="text-lg font-medium">Aucune alerte de priorite moyenne</p>
+                                                    <p className="text-sm text-muted-foreground">Tout fonctionne comme prevu</p>
                                                 </CardContent>
                                             </Card>
                                         )}
