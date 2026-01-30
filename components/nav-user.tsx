@@ -8,6 +8,7 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react"
 import { useAuth } from "@/lib/auth/context"
+import { ThemeSelectorMenuItem } from "@/components/theme-selector"
 
 import {
   Avatar,
@@ -41,12 +42,14 @@ function getInitials(name: string): string {
 
 export function NavUser({
                           user,
+                          isAdmin = false,
                         }: {
   user: {
     name: string
     email: string
     avatar?: string
   }
+  isAdmin?: boolean
 }) {
   const { isMobile } = useSidebar()
   const { logout } = useAuth()
@@ -115,6 +118,12 @@ export function NavUser({
                   <IconNotification />
                   Notifications
                 </DropdownMenuItem>
+                {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <ThemeSelectorMenuItem />
+                    </>
+                )}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>

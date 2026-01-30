@@ -1,10 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
 /*
- * Croix-Rouge francaise - Charte graphique
- * Light mode: blanc et rouge dominant
- * Dark mode: noir et bleu dominant
+ * Dynamic Multi-Client Theming System
+ * Colors are injected via JavaScript from client theme files
+ * Default values (Croix-Rouge francaise) are provided as fallbacks
  */
 
 @theme inline {
@@ -48,122 +50,113 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  /* CRF Brand Colors */
-  --color-crf-red: var(--crf-red);
-  --color-crf-red-light: var(--crf-red-light);
-  --color-crf-blue: var(--crf-blue);
-  --color-crf-blue-light: var(--crf-blue-light);
-  --color-crf-violet: var(--crf-violet);
-  --color-crf-violet-light: var(--crf-violet-light);
-  --color-crf-green: var(--crf-green);
-  --color-crf-green-light: var(--crf-green-light);
+  /* Brand Colors (dynamic) */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-light: var(--brand-primary-light);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-light: var(--brand-secondary-light);
+  --color-brand-accent1: var(--brand-accent1);
+  --color-brand-accent1-light: var(--brand-accent1-light);
+  --color-brand-accent2: var(--brand-accent2);
+  --color-brand-accent2-light: var(--brand-accent2-light);
 }
 
 :root {
-  --radius: 0.5rem;
-  /* CRF Brand Colors - Palette officielle */
-  --crf-red: #ff010b;
-  --crf-red-light: #ffcbbe;
-  --crf-blue: #1dbfee;
-  --crf-blue-light: #c2d9ff;
-  --crf-violet: #cebfff;
-  --crf-violet-light: #ebe5ff;
-  --crf-green: #13d3aa;
-  --crf-green-light: #cbf1e4;
-  /* Light theme - blanc et rouge dominant */
-  --background: #fefefe;
-  --foreground: #000000;
-  --card: #ffffff;
-  --card-foreground: #000000;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: #ff010b;
-  --primary-foreground: #fefefe;
-  --secondary: #ffcbbe;
-  --secondary-foreground: #000000;
-  --muted: #f5f5f5;
-  --muted-foreground: #525252;
-  --accent: #ffcbbe;
-  --accent-foreground: #000000;
-  --destructive: #ff010b;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #ff010b;
-  /* Chart colors using CRF palette */
-  --chart-1: #ff010b;
-  --chart-2: #13d3aa;
-  --chart-3: #1dbfee;
-  --chart-4: #cebfff;
-  --chart-5: #ffcbbe;
-  /* Sidebar - blanc avec accent rouge */
-  --sidebar: #fefefe;
-  --sidebar-foreground: #000000;
-  --sidebar-primary: #ff010b;
-  --sidebar-primary-foreground: #fefefe;
-  --sidebar-accent: #ffcbbe;
-  --sidebar-accent-foreground: #000000;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #ff010b;
+  --radius: 0.3rem;
+  /* Default brand colors (Croix-Rouge francaise) - overridden by JS */
+  --brand-primary: #ff010b;
+  --brand-primary-light: #ffcbbe;
+  --brand-secondary: #1dbfee;
+  --brand-secondary-light: #c2d9ff;
+  --brand-accent1: #cebfff;
+  --brand-accent1-light: #ebe5ff;
+  --brand-accent2: #13d3aa;
+  --brand-accent2-light: #cbf1e4;
+  /* Light theme colors - use dynamic values with fallbacks */
+  --background: var(--light-background, #fefefe);
+  --foreground: var(--light-foreground, #000000);
+  --card: var(--light-card, #ffffff);
+  --card-foreground: var(--light-card-foreground, #000000);
+  --popover: var(--light-popover, #ffffff);
+  --popover-foreground: var(--light-popover-foreground, #000000);
+  --primary: var(--light-primary, #ff010b);
+  --primary-foreground: var(--light-primary-foreground, #fefefe);
+  --secondary: var(--light-secondary, #ffcbbe);
+  --secondary-foreground: var(--light-secondary-foreground, #000000);
+  --muted: var(--light-muted, #f5f5f5);
+  --muted-foreground: var(--light-muted-foreground, #525252);
+  --accent: var(--light-accent, #ffcbbe);
+  --accent-foreground: var(--light-accent-foreground, #000000);
+  --destructive: var(--light-destructive, #ff010b);
+  --border: var(--light-border, #e5e5e5);
+  --input: var(--light-input, #e5e5e5);
+  --ring: var(--light-ring, #ff010b);
+  /* Chart colors */
+  --chart-1: var(--light-chart-1, #ff010b);
+  --chart-2: var(--light-chart-2, #13d3aa);
+  --chart-3: var(--light-chart-3, #1dbfee);
+  --chart-4: var(--light-chart-4, #cebfff);
+  --chart-5: var(--light-chart-5, #ffcbbe);
+  /* Sidebar */
+  --sidebar: var(--light-sidebar, #fefefe);
+  --sidebar-foreground: var(--light-sidebar-foreground, #000000);
+  --sidebar-primary: var(--light-sidebar-primary, #ff010b);
+  --sidebar-primary-foreground: var(--light-sidebar-primary-foreground, #fefefe);
+  --sidebar-accent: var(--light-sidebar-accent, #ffcbbe);
+  --sidebar-accent-foreground: var(--light-sidebar-accent-foreground, #000000);
+  --sidebar-border: var(--light-sidebar-border, #e5e5e5);
+  --sidebar-ring: var(--light-sidebar-ring, #ff010b);
   /* Status colors */
-  --warning: #cebfff;
-  --warning-foreground: #000000;
-  --success: #13d3aa;
-  --success-foreground: #000000;
-  --critical: #ff010b;
-  --critical-foreground: #fefefe;
+  --warning: var(--light-warning, #cebfff);
+  --warning-foreground: var(--light-warning-foreground, #000000);
+  --success: var(--light-success, #13d3aa);
+  --success-foreground: var(--light-success-foreground, #000000);
+  --critical: var(--light-critical, #ff010b);
+  --critical-foreground: var(--light-critical-foreground, #fefefe);
 }
 
 .dark {
-  /* CRF Brand Colors */
-  --crf-red: #ff010b;
-  --crf-red-light: #ffcbbe;
-  --crf-blue: #1dbfee;
-  --crf-blue-light: #c2d9ff;
-  --crf-violet: #cebfff;
-  --crf-violet-light: #ebe5ff;
-  --crf-green: #13d3aa;
-  --crf-green-light: #cbf1e4;
-  /* Dark theme - noir et bleu dominant */
-  --background: #000000;
-  --foreground: #fefefe;
-  --card: #0a0a0a;
-  --card-foreground: #fefefe;
-  --popover: #0a0a0a;
-  --popover-foreground: #fefefe;
-  --primary: #1dbfee;
-  --primary-foreground: #000000;
-  --secondary: #c2d9ff;
-  --secondary-foreground: #000000;
-  --muted: #1a1a1a;
-  --muted-foreground: #a3a3a3;
-  --accent: #c2d9ff;
-  --accent-foreground: #000000;
-  --destructive: #ff010b;
-  --border: #262626;
-  --input: #262626;
-  --ring: #1dbfee;
+  /* Dark theme colors - use dynamic values with fallbacks */
+  --background: var(--dark-background, #000000);
+  --foreground: var(--dark-foreground, #fefefe);
+  --card: var(--dark-card, #0a0a0a);
+  --card-foreground: var(--dark-card-foreground, #fefefe);
+  --popover: var(--dark-popover, #0a0a0a);
+  --popover-foreground: var(--dark-popover-foreground, #fefefe);
+  --primary: var(--dark-primary, #1dbfee);
+  --primary-foreground: var(--dark-primary-foreground, #000000);
+  --secondary: var(--dark-secondary, #c2d9ff);
+  --secondary-foreground: var(--dark-secondary-foreground, #000000);
+  --muted: var(--dark-muted, #1a1a1a);
+  --muted-foreground: var(--dark-muted-foreground, #a3a3a3);
+  --accent: var(--dark-accent, #c2d9ff);
+  --accent-foreground: var(--dark-accent-foreground, #000000);
+  --destructive: var(--dark-destructive, #ff010b);
+  --border: var(--dark-border, #262626);
+  --input: var(--dark-input, #262626);
+  --ring: var(--dark-ring, #1dbfee);
   /* Chart colors */
-  --chart-1: #1dbfee;
-  --chart-2: #13d3aa;
-  --chart-3: #ff010b;
-  --chart-4: #cebfff;
-  --chart-5: #c2d9ff;
-  /* Sidebar - noir avec accent bleu */
-  --sidebar: #000000;
-  --sidebar-foreground: #fefefe;
-  --sidebar-primary: #1dbfee;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #0d3a4a;
-  --sidebar-accent-foreground: #fefefe;
-  --sidebar-border: #262626;
-  --sidebar-ring: #1dbfee;
+  --chart-1: var(--dark-chart-1, #1dbfee);
+  --chart-2: var(--dark-chart-2, #13d3aa);
+  --chart-3: var(--dark-chart-3, #ff010b);
+  --chart-4: var(--dark-chart-4, #cebfff);
+  --chart-5: var(--dark-chart-5, #c2d9ff);
+  /* Sidebar */
+  --sidebar: var(--dark-sidebar, #000000);
+  --sidebar-foreground: var(--dark-sidebar-foreground, #fefefe);
+  --sidebar-primary: var(--dark-sidebar-primary, #1dbfee);
+  --sidebar-primary-foreground: var(--dark-sidebar-primary-foreground, #000000);
+  --sidebar-accent: var(--dark-sidebar-accent, #0d3a4a);
+  --sidebar-accent-foreground: var(--dark-sidebar-accent-foreground, #fefefe);
+  --sidebar-border: var(--dark-sidebar-border, #262626);
+  --sidebar-ring: var(--dark-sidebar-ring, #1dbfee);
   /* Status colors */
-  --warning: #cebfff;
-  --warning-foreground: #000000;
-  --success: #13d3aa;
-  --success-foreground: #000000;
-  --critical: #ff010b;
-  --critical-foreground: #fefefe;
+  --warning: var(--dark-warning, #cebfff);
+  --warning-foreground: var(--dark-warning-foreground, #000000);
+  --success: var(--dark-success, #13d3aa);
+  --success-foreground: var(--dark-success-foreground, #000000);
+  --critical: var(--dark-critical, #ff010b);
+  --critical-foreground: var(--dark-critical-foreground, #fefefe);
 }
 
 @layer base {
