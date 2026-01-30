@@ -1,15 +1,15 @@
+"use client"
+
 import React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { InventoryTable } from "@/components/inventory-table"
-import { SectionCards } from "@/components/section-cards"
+import { InventoryTableApi } from "@/components/inventory-table-api"
+import { SectionCardsApi } from "@/components/section-cards-api"
 import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-
-import data from "./data.json"
 
 export default function Page() {
   return (
@@ -27,18 +27,18 @@ export default function Page() {
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                <SectionCards />
+                <SectionCardsApi />
                 <div className="px-4 lg:px-6">
                   <ChartAreaInteractive />
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="px-4 lg:px-6">
-                    <h2 className="text-lg font-semibold">Aperçu de l'inventaire</h2>
+                    <h2 className="text-lg font-semibold">Apercu de l'inventaire</h2>
                     <p className="text-sm text-muted-foreground">
                       Vue rapide de tous les articles par site
                     </p>
                   </div>
-                  <InventoryTable data={data} />
+                  <InventoryTableApi />
                 </div>
               </div>
             </div>

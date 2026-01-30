@@ -1,55 +1,33 @@
+"use client"
+
 import React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
-import { InventoryTable } from "@/components/inventory-table"
+import { InventoryTableApi } from "@/components/inventory-table-api"
 import { SiteHeader } from "@/components/site-header"
+import { useSites, useItems, useContainers } from "@/hooks/use-api"
 import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar"
 import {
     Card,
-    CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import {
     IconBuildingWarehouse,
-    IconTruck,
-    IconMapPin,
     IconPackage,
 } from "@tabler/icons-react"
-
-import data from "../data.json"
-
-const locationStats = [
-    {
-        name: "Entrepôt principal",
-        icon: IconBuildingWarehouse,
-        items: 1247,
-        alerts: 2,
-    },
-    {
-        name: "Unité ambulance 01",
-        icon: IconTruck,
-        items: 156,
-        alerts: 3,
-    },
-    {
-        name: "Unité ambulance 02",
-        icon: IconTruck,
-        items: 142,
-        alerts: 1,
-    },
-    {
-        name: "Poste de terrain Alpha",
-        icon: IconMapPin,
-        items: 89,
-        alerts: 1,
-    },
-]
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function InventoryPage() {
+    const { data: sites, isLoading: sitesLoading } = useSites()
+    const { data: items, isLoading: itemsLoading } = useItems()
+    const { data: containers, isLoading: containersLoading } = useContainers()
+
+    const isLoading = sitesLoading || itemsLoading || containersLoading
+
     return (
         <SidebarProvider
             style={
@@ -68,27 +46,51 @@ export default function InventoryPage() {
                             {/* Location Cards */}
                             <div className="px-4 lg:px-6">
                                 <h2 className="mb-4 text-lg font-semibold">Inventaire par site</h2>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                    {locationStats.map((location) => (
-                                        <Card key={location.name} className="cursor-pointer transition-colors hover:bg-muted/50">
-                                            <CardHeader className="pb-2">
-                                                <div className="flex items-center justify-between">
-                                                    <location.icon className="size-5 text-primary" />
-                                                    {location.alerts > 0 && (
-                                                        <span className="flex size-5 items-center justify-center rounded-full bg-[oklch(0.55_0.2_25)] text-xs font-medium text-white">
-                              {location.alerts}
-                            </span>
-                                                    )}
-                                                </div>
-                                                <CardTitle className="text-base">{location.name}</CardTitle>
-                                                <CardDescription className="flex items-center gap-1">
-                                                    <IconPackage className="size-3" />
-                                                    {location.items.toLocaleString()} articles
-                                                </CardDescription>
-                                            </CardHeader>
-                                        </Card>
-                                    ))}
-                                </div>
+                                {isLoading ? (
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        {[...Array(4)].map((_, i) => (
+                                            <Card key={i}>
+                                                <CardHeader className="pb-2">
+                                                    <Skeleton className="size-5" />
+                                                    <Skeleton className="h-5 w-32" />
+                                                    <Skeleton className="h-4 w-24" />
+                                                </CardHeader>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        {sites?.map((site) => {
+                                            // Count containers for this site
+                                            const siteContainers = containers?.filter(c =>
+                                                c.is_active
+                                            ).length || 0
+
+                                            return (
+                                                <Card key={site.id} className="cursor-pointer transition-colors hover:bg-muted/50">
+                                                    <CardHeader className="pb-2">
+                                                        <div className="flex items-center justify-between">
+                                                            <IconBuildingWarehouse className="size-5 text-primary" />
+                                                        </div>
+                                                        <CardTitle className="text-base">{site.name}</CardTitle>
+                                                        <CardDescription className="flex items-center gap-1">
+                                                            <IconPackage className="size-3" />
+                                                            {site.address || "Adresse non definie"}
+                                                        </CardDescription>
+                                                    </CardHeader>
+                                                </Card>
+                                            )
+                                        })}
+                                        {(!sites || sites.length === 0) && (
+                                            <Card className="col-span-full">
+                                                <CardHeader>
+                                                    <CardTitle className="text-base text-muted-foreground">Aucun site configure</CardTitle>
+                                                    <CardDescription>Ajoutez des sites pour organiser votre inventaire</CardDescription>
+                                                </CardHeader>
+                                            </Card>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Inventory Table */}
@@ -96,10 +98,10 @@ export default function InventoryPage() {
                                 <div className="px-4 lg:px-6">
                                     <h2 className="text-lg font-semibold">Tous les articles d'inventaire</h2>
                                     <p className="text-sm text-muted-foreground">
-                                        Gérer et suivre toutes les fournitures médicales et les équipements
+                                        Gerer et suivre toutes les fournitures medicales et les equipements
                                     </p>
                                 </div>
-                                <InventoryTable data={data} />
+                                <InventoryTableApi />
                             </div>
                         </div>
                     </div>
