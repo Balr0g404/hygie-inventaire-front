@@ -3,12 +3,14 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { IconFirstAidKit, IconLoader2 } from "@tabler/icons-react"
+import { IconLoader2 } from "@tabler/icons-react"
 import { useAuth } from "@/lib/auth/context"
 import { ApiError } from "@/lib/api/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ThemeToggle } from "@/components/theme-toggle"
+
 import {
     Card,
     CardContent,
@@ -63,10 +65,26 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
-            <div className="mb-8 flex items-center gap-2">
-                <IconFirstAidKit className="size-8 text-primary" />
-                <span className="text-2xl font-semibold">Hygie inventaire</span>
+        <div className="relative flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
+            <div className="absolute right-4 top-4">
+                <ThemeToggle />
+            </div>
+            <div className="mb-8 flex flex-col items-center gap-3">
+                <svg
+                    viewBox="0 0 24 24"
+                    className="size-12"
+                    fill="currentColor"
+                    aria-label="Croix-Rouge"
+                >
+                    <path
+                        d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"
+                        fill="#ff010b"
+                    />
+                </svg>
+                <div className="flex flex-col items-center">
+                    <span className="text-xl font-semibold">Croix-Rouge francaise</span>
+                    <span className="text-sm text-muted-foreground">Hygie inventaire</span>
+                </div>
             </div>
 
             <Card className="w-full max-w-md">
@@ -88,7 +106,7 @@ export default function LoginPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="exemple@croix-rouge.fr"
+                                placeholder="prenom.nom@croix-rouge.fr"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -103,7 +121,7 @@ export default function LoginPage() {
                                     href="/forgot-password"
                                     className="text-sm text-muted-foreground hover:text-primary hover:underline"
                                 >
-                                    Mot de passe oublié ?
+                                    Mot de passe oublie ?
                                 </Link>
                             </div>
                             <Input
@@ -119,7 +137,7 @@ export default function LoginPage() {
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
-                        <Button type="submit" className="w-full gap-2 m-2" disabled={isSubmitting}>
+                        <Button type="submit" className="w-full m-2" disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
                                     <IconLoader2 className="mr-2 size-4 animate-spin" />
@@ -132,7 +150,7 @@ export default function LoginPage() {
                         <p className="text-center text-sm text-muted-foreground">
                             Pas encore de compte ?{" "}
                             <Link
-                                href="/app/register"
+                                href="/register"
                                 className="font-medium text-primary hover:underline"
                             >
                                 Creer un compte
@@ -145,7 +163,7 @@ export default function LoginPage() {
             <p className="mt-8 text-center text-xs text-muted-foreground">
                 En vous connectant, vous acceptez nos{" "}
                 <Link href="/terms" className="underline hover:text-foreground">
-                    Conditions d'utilisation
+                    Conditions d&apos;utilisation
                 </Link>{" "}
                 et notre{" "}
                 <Link href="/privacy" className="underline hover:text-foreground">

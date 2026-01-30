@@ -1,13 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Croix-Rouge francaise - Charte graphique
+ * Light mode: blanc et rouge dominant
+ * Dark mode: noir et bleu dominant
+ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
+  --font-mono: var(--font-roboto-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -44,89 +48,122 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  /* CRF Brand Colors */
+  --color-crf-red: var(--crf-red);
+  --color-crf-red-light: var(--crf-red-light);
+  --color-crf-blue: var(--crf-blue);
+  --color-crf-blue-light: var(--crf-blue-light);
+  --color-crf-violet: var(--crf-violet);
+  --color-crf-violet-light: var(--crf-violet-light);
+  --color-crf-green: var(--crf-green);
+  --color-crf-green-light: var(--crf-green-light);
 }
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.985 0.002 240);
-  --foreground: oklch(0.15 0.02 240);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 240);
-  --primary: oklch(0.35 0.08 240);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0.005 240);
-  --secondary-foreground: oklch(0.25 0.03 240);
-  --muted: oklch(0.96 0.005 240);
-  --muted-foreground: oklch(0.5 0.02 240);
-  --accent: oklch(0.96 0.005 240);
-  --accent-foreground: oklch(0.25 0.03 240);
-  --destructive: oklch(0.55 0.2 25);
-  --border: oklch(0.92 0.005 240);
-  --input: oklch(0.92 0.005 240);
-  --ring: oklch(0.35 0.08 240);
-  --chart-1: oklch(0.35 0.08 240);
-  --chart-2: oklch(0.55 0.15 160);
-  --chart-3: oklch(0.7 0.15 85);
-  --chart-4: oklch(0.6 0.12 30);
-  --chart-5: oklch(0.5 0.1 280);
-  --sidebar: oklch(0.98 0.002 240);
-  --sidebar-foreground: oklch(0.15 0.02 240);
-  --sidebar-primary: oklch(0.35 0.08 240);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.94 0.01 240);
-  --sidebar-accent-foreground: oklch(0.25 0.03 240);
-  --sidebar-border: oklch(0.92 0.005 240);
-  --sidebar-ring: oklch(0.35 0.08 240);
-  /* Emergency colors */
-  --warning: oklch(0.75 0.15 75);
-  --warning-foreground: oklch(0.25 0.05 75);
-  --success: oklch(0.6 0.15 145);
-  --success-foreground: oklch(0.98 0 0);
-  --critical: oklch(0.55 0.2 25);
-  --critical-foreground: oklch(0.98 0 0);
+  /* CRF Brand Colors - Palette officielle */
+  --crf-red: #ff010b;
+  --crf-red-light: #ffcbbe;
+  --crf-blue: #1dbfee;
+  --crf-blue-light: #c2d9ff;
+  --crf-violet: #cebfff;
+  --crf-violet-light: #ebe5ff;
+  --crf-green: #13d3aa;
+  --crf-green-light: #cbf1e4;
+  /* Light theme - blanc et rouge dominant */
+  --background: #fefefe;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #ff010b;
+  --primary-foreground: #fefefe;
+  --secondary: #ffcbbe;
+  --secondary-foreground: #000000;
+  --muted: #f5f5f5;
+  --muted-foreground: #525252;
+  --accent: #ffcbbe;
+  --accent-foreground: #000000;
+  --destructive: #ff010b;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #ff010b;
+  /* Chart colors using CRF palette */
+  --chart-1: #ff010b;
+  --chart-2: #13d3aa;
+  --chart-3: #1dbfee;
+  --chart-4: #cebfff;
+  --chart-5: #ffcbbe;
+  /* Sidebar - blanc avec accent rouge */
+  --sidebar: #fefefe;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #ff010b;
+  --sidebar-primary-foreground: #fefefe;
+  --sidebar-accent: #ffcbbe;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #ff010b;
+  /* Status colors */
+  --warning: #cebfff;
+  --warning-foreground: #000000;
+  --success: #13d3aa;
+  --success-foreground: #000000;
+  --critical: #ff010b;
+  --critical-foreground: #fefefe;
 }
 
 .dark {
-  --background: oklch(0.14 0.02 240);
-  --foreground: oklch(0.95 0.005 240);
-  --card: oklch(0.18 0.02 240);
-  --card-foreground: oklch(0.95 0.005 240);
-  --popover: oklch(0.18 0.02 240);
-  --popover-foreground: oklch(0.95 0.005 240);
-  --primary: oklch(0.6 0.12 240);
-  --primary-foreground: oklch(0.12 0.02 240);
-  --secondary: oklch(0.22 0.025 240);
-  --secondary-foreground: oklch(0.95 0.005 240);
-  --muted: oklch(0.22 0.025 240);
-  --muted-foreground: oklch(0.65 0.02 240);
-  --accent: oklch(0.22 0.025 240);
-  --accent-foreground: oklch(0.95 0.005 240);
-  --destructive: oklch(0.6 0.2 25);
-  --border: oklch(0.28 0.02 240);
-  --input: oklch(0.28 0.02 240);
-  --ring: oklch(0.6 0.12 240);
-  --chart-1: oklch(0.6 0.12 240);
-  --chart-2: oklch(0.65 0.15 160);
-  --chart-3: oklch(0.75 0.15 85);
-  --chart-4: oklch(0.65 0.15 30);
-  --chart-5: oklch(0.6 0.12 280);
-  --sidebar: oklch(0.16 0.02 240);
-  --sidebar-foreground: oklch(0.95 0.005 240);
-  --sidebar-primary: oklch(0.6 0.12 240);
-  --sidebar-primary-foreground: oklch(0.12 0.02 240);
-  --sidebar-accent: oklch(0.22 0.025 240);
-  --sidebar-accent-foreground: oklch(0.95 0.005 240);
-  --sidebar-border: oklch(0.28 0.02 240);
-  --sidebar-ring: oklch(0.6 0.12 240);
-  /* Emergency colors */
-  --warning: oklch(0.75 0.15 75);
-  --warning-foreground: oklch(0.2 0.05 75);
-  --success: oklch(0.65 0.15 145);
-  --success-foreground: oklch(0.12 0 0);
-  --critical: oklch(0.6 0.2 25);
-  --critical-foreground: oklch(0.98 0 0);
+  /* CRF Brand Colors */
+  --crf-red: #ff010b;
+  --crf-red-light: #ffcbbe;
+  --crf-blue: #1dbfee;
+  --crf-blue-light: #c2d9ff;
+  --crf-violet: #cebfff;
+  --crf-violet-light: #ebe5ff;
+  --crf-green: #13d3aa;
+  --crf-green-light: #cbf1e4;
+  /* Dark theme - noir et bleu dominant */
+  --background: #000000;
+  --foreground: #fefefe;
+  --card: #0a0a0a;
+  --card-foreground: #fefefe;
+  --popover: #0a0a0a;
+  --popover-foreground: #fefefe;
+  --primary: #1dbfee;
+  --primary-foreground: #000000;
+  --secondary: #c2d9ff;
+  --secondary-foreground: #000000;
+  --muted: #1a1a1a;
+  --muted-foreground: #a3a3a3;
+  --accent: #c2d9ff;
+  --accent-foreground: #000000;
+  --destructive: #ff010b;
+  --border: #262626;
+  --input: #262626;
+  --ring: #1dbfee;
+  /* Chart colors */
+  --chart-1: #1dbfee;
+  --chart-2: #13d3aa;
+  --chart-3: #ff010b;
+  --chart-4: #cebfff;
+  --chart-5: #c2d9ff;
+  /* Sidebar - noir avec accent bleu */
+  --sidebar: #000000;
+  --sidebar-foreground: #fefefe;
+  --sidebar-primary: #1dbfee;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #0d3a4a;
+  --sidebar-accent-foreground: #fefefe;
+  --sidebar-border: #262626;
+  --sidebar-ring: #1dbfee;
+  /* Status colors */
+  --warning: #cebfff;
+  --warning-foreground: #000000;
+  --success: #13d3aa;
+  --success-foreground: #000000;
+  --critical: #ff010b;
+  --critical-foreground: #fefefe;
 }
 
 @layer base {

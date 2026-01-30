@@ -117,9 +117,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   asChild
                   className="data-[slot=sidebar-menu-button]:!p-1.5"
               >
-                <a href="/dashboard">
-                  <IconFirstAidKit className="!size-5 text-primary" />
-                  <span className="text-base font-semibold">Hygie inventaire</span>
+                <a href="/dashboard" className="flex items-center gap-2">
+                  <svg
+                      viewBox="0 0 24 24"
+                      className="!size-6"
+                      fill="currentColor"
+                      aria-label="Croix-Rouge"
+                  >
+                    <path
+                        d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"
+                        fill="#ff010b"
+                    />
+                  </svg>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold leading-tight">Croix-Rouge francaise</span>
+                    <span className="text-xs text-muted-foreground leading-tight">Hygie inventaire</span>
+                  </div>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
