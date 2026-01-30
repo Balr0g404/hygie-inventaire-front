@@ -21,6 +21,7 @@ import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { BrandLogo } from "@/components/brand-logo"
 import {
   Sidebar,
   SidebarContent,
@@ -117,22 +118,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   asChild
                   className="data-[slot=sidebar-menu-button]:!p-1.5"
               >
-                <a href="/dashboard" className="flex items-center gap-2">
-                  <svg
-                      viewBox="0 0 24 24"
-                      className="!size-6"
-                      fill="currentColor"
-                      aria-label="Croix-Rouge"
-                  >
-                    <path
-                        d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"
-                        fill="#ff010b"
-                    />
-                  </svg>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold leading-tight">Croix-Rouge francaise</span>
-                    <span className="text-xs text-muted-foreground leading-tight">Hygie inventaire</span>
-                  </div>
+                <a href="/dashboard">
+                  <BrandLogo size="sm" />
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -144,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={displayUser} />
+          <NavUser user={displayUser} isAdmin={user?.is_superuser || false} />
         </SidebarFooter>
       </Sidebar>
   )

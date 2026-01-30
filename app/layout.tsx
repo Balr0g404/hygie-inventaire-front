@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Poppins, Roboto_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/lib/auth/context";
+import { ClientThemeProvider } from "@/lib/themes/context";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -37,9 +38,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <AuthProvider>
-                {children}
-            </AuthProvider>
+            <ClientThemeProvider>
+                <AuthProvider>
+                    {children}
+                </AuthProvider>
+            </ClientThemeProvider>
         </ThemeProvider>
         </body>
         </html>

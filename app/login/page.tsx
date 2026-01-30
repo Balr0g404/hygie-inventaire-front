@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ThemeToggle } from "@/components/theme-toggle"
-
+import { BrandLogoCompact } from "@/components/brand-logo"
 import {
     Card,
     CardContent,
@@ -69,23 +69,7 @@ export default function LoginPage() {
             <div className="absolute right-4 top-4">
                 <ThemeToggle />
             </div>
-            <div className="mb-8 flex flex-col items-center gap-3">
-                <svg
-                    viewBox="0 0 24 24"
-                    className="size-12"
-                    fill="currentColor"
-                    aria-label="Croix-Rouge"
-                >
-                    <path
-                        d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"
-                        fill="#ff010b"
-                    />
-                </svg>
-                <div className="flex flex-col items-center">
-                    <span className="text-xl font-semibold">Croix-Rouge francaise</span>
-                    <span className="text-sm text-muted-foreground">Hygie inventaire</span>
-                </div>
-            </div>
+            <BrandLogoCompact className="mb-8" />
 
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1 text-center">
@@ -163,7 +147,7 @@ export default function LoginPage() {
             <p className="mt-8 text-center text-xs text-muted-foreground">
                 En vous connectant, vous acceptez nos{" "}
                 <Link href="/terms" className="underline hover:text-foreground">
-                    Conditions d&apos;utilisation
+                    Conditions d'utilisation
                 </Link>{" "}
                 et notre{" "}
                 <Link href="/privacy" className="underline hover:text-foreground">
