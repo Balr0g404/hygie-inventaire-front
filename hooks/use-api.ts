@@ -13,7 +13,8 @@ import {
     inventorySessionsApi,
     usersApi,
     structuresApi,
-    organizationsApi
+    organizationsApi,
+    lotTemplatesApi
 } from "@/lib/api/client"
 import type {
     Item,
@@ -27,7 +28,8 @@ import type {
     InventorySession,
     User,
     Structure,
-    Organization
+    Organization,
+    LotTemplate
 } from "@/lib/api/types"
 
 // Items
@@ -179,5 +181,17 @@ export function useOrganization(id: number | null) {
     return useSWR<Organization>(
         id ? `organizations/${id}` : null,
         id ? () => organizationsApi.get(id) : null
+    )
+}
+
+// Lot Templates
+export function useLotTemplates() {
+    return useSWR<LotTemplate[]>("lot-templates", () => lotTemplatesApi.list())
+}
+
+export function useLotTemplate(id: number | null) {
+    return useSWR<LotTemplate>(
+        id ? `lot-templates/${id}` : null,
+        id ? () => lotTemplatesApi.get(id) : null
     )
 }
