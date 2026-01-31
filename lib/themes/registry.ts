@@ -10,7 +10,7 @@ export const themes: Record<ClientId, ClientTheme> = {
 }
 
 // Default theme to use if none specified
-export const DEFAULT_THEME_ID: ClientId = "croix-rouge-francaise"
+export const DEFAULT_THEME_ID: ClientId = "samu"
 
 // Get theme by ID with fallback to default
 export function getTheme(id?: ClientId | null): ClientTheme {

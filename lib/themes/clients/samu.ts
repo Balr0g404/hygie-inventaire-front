@@ -5,7 +5,7 @@ import type { ClientTheme } from "../types"
 
 export const samu: ClientTheme = {
     id: "samu",
-    name: "SAMU - Service d'Aide Medicale Urgente",
+    name: "Service d'Aide Medicale Urgente",
     shortName: "SAMU",
 
     logo: {

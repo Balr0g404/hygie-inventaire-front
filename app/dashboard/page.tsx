@@ -9,6 +9,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 
 export default function Page() {
   return (
@@ -31,7 +32,7 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="px-4 lg:px-6">
-                    <h2 className="text-lg font-semibold">Apercu de l&apsos;inventaire</h2>
+                    <h2 className="text-lg font-semibold">Apercu de l&apos;inventaire</h2>
                     <p className="text-sm text-muted-foreground">
                       Vue rapide de tous les articles par site
                     </p>
